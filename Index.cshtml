@@ -1,0 +1,308 @@
+﻿@model MyStmt.ViewModels.ProfileViewModel
+@{
+    ViewBag.Title = "Login";
+    Layout = null;
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - MyStmt Users</title>
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <link rel="stylesheet" href="~/Content/Style.css" />
+    <style>
+        #divcontent, #divbanner {
+            margin-top: 12px;
+            margin-bottom: 12px;
+        }
+
+        #divbanner {
+            text-align: right;
+        }
+
+        .validation-summary-errors ul {
+            list-style: none;
+            margin-left: -40px
+        }
+
+
+        .text-title {
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding: 0;
+            font-family: "Segoe UI","Helvetica Neue","Lucida Grande","Roboto","Ebrima","Nirmala UI","Gadugi","Segoe Xbox Symbol","Segoe UI Symbol","Meiryo UI","Khmer UI","Tunga","Lao UI","Raavi","Iskoola Pota","Latha","Leelawadee","Microsoft YaHei UI","Microsoft JhengHei UI","Malgun Gothic","Estrangelo Edessa","Microsoft Himalaya","Microsoft New Tai Lue","Microsoft PhagsPa","Microsoft Tai Le","Microsoft Yi Baiti","Mongolian Baiti","MV Boli","Myanmar Text","Cambria Math"
+        }
+
+        #divinner {
+            background-color: #fff;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 28px;
+            position: relative;
+            max-width: 440px;
+            min-width: 320px;
+            min-height: 338px;
+            width: calc(100% - 50px);
+            -webkit-box-shadow: 0 2px 3px rgba(0,0,0,55);
+            -moz-box-shadow: 0 2px 3px rgba(0,0,0,55);
+            box-shadow: 0 2px 3px rgba(0,0,0,55);
+            padding: 44px;
+            text-align: left;
+            border: 1px solid rgba(0,0,0,.4);
+            top: 0px;
+            left: 0px;
+        }
+
+        #txtCompanyID, #txtAgentID, #txtpwd {
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            border-bottom: 1px solid #0067b8;
+            padding-bottom: 8px;
+            width: 100%;
+            outline: none; /*chrome*/
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        #divfoot {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            text-align: right;
+        }
+
+        #iplogin {
+            border: none;
+            background-color: #0067b8;
+            padding: 6px 33px;
+            color: white;
+            font-family: inherit;
+            font-size: 1.3rem;
+        }
+
+        #divpagefoot {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            overflow: visible;
+            z-index: 99;
+            clear: both;
+            background-color: rgba(0,0,0,.6);
+        }
+
+        #divfootNode {
+            margin: 0;
+            float: right;
+            color: rgba(0,0,0,.7);
+            font-size: 13px;
+        }
+
+        a {
+            color: #fff;
+            font-size: 13px;
+            line-height: 28px;
+            white-space: nowrap;
+            display: inline-block;
+            margin-left: 1px;
+            margin-right: 18px;
+            text-decoration: none;
+        }
+
+        #iplogin:hover {
+            background-color: #0086ef;
+        }
+
+        @@media (max-width: 600px), (max-height:540px) {
+            #divmain {
+                vertical-align: top;
+            }
+
+            #divinner {
+                box-shadow: none;
+                border: 0;
+                padding: 24px;
+                width: 100%;
+            }
+
+            #divpagefoot {
+                position: absolute;
+                background: #fff;
+                margin-bottom: 0;
+                left: 0;
+            }
+
+            #divfootNode {
+                float: left;
+                margin: 0 24px !important;
+            }
+
+            a {
+                color: #777;
+            }
+
+            .bodycss {
+                background-image: none;
+                background-color: white;
+            }
+        }
+    </style>
+
+    <script type="text/javascript" src="~/Scripts/jquery.plugin.apl.fg.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            $("body").addClass('bodycss');
+
+            var BodyCss = getbackgroundPic();
+            $("body").addClass(BodyCss);
+
+            // row height: 34
+            // Chrome: 221=90(Header)+35(bar)+96(Pager)
+            // FireFox: 302~88(Header)+35(bar)++95.5(Pager)  // no 57(TopLine)
+            //38: (bottom task bar) 24+16(.page padding-bottom)
+            // 26: divContent1 padding-top
+            //4:  sum of the border width of DivContent and Table in the divgrid
+            //debugger;
+            if (screen.height == screen.availHeight) {
+                //Task bar hidden
+                var PageSize = Math.floor((document.body.clientHeight - 221 - 40 - 26 - 4) / 34) - 1; // 1: means Title row of the Grid
+            }
+            else {
+                var PageSize = Math.floor((document.body.clientHeight - 221 - 26 - 4) / 34) - 1; // 1: means Title row of the Grid
+            }
+            $("#txtPageSize").val(PageSize.toString());
+
+            if ($.trim("@ViewBag.ResetPassword").length != 0) {
+                if ("@ViewBag.ResetPassword" =="Y") {
+                    ResetPassword();
+                }
+            }
+           });
+
+        //Show the Popup Modal to Change Password
+        function ResetPassword() {
+            var s = "<div style ='text-align: right; padding-bottom: 40px; padding-right: 0px;'><img src='/V19/Picture/ChangePassword.jpg' /></div>";
+            s += "<input id='txtCurPass' placeholder='Current Password' type='password' /> <br /><br />";
+            s += "<input id='txtNewPass' placeholder='New Password'   type='password' /><br /><br />";
+            s += "<input id='txtConPass' placeholder='Confirm New Password'   type='password' /><br /><br />";
+            s += "<div class='validation-summary-errors text-danger'  style='color:red; text-align:left;'><ul><li id='lierr'></li></ul ></div >";
+
+            $.popView(s, resetPSWD);
+        }
+
+        function resetPSWD()
+        {
+            var sResult = "";
+            if ($.trim($("#txtCurPass").val()).length == 0) {
+                $("#lierr").html("The current password is required");
+            }
+            else if ($.trim($("#txtNewPass").val()).length==0)
+            {
+                $("#lierr").html("The new password is required");
+            }
+            else if ($.trim($("#txtConPass").val()).length == 0) {
+                $("#lierr").html("The confirm password is required");
+            }
+            else if ($("#txtNewPass").val() != $("#txtConPass").val()) {
+                $("#lierr").html("The new passwords do not match");
+            }
+            else {
+
+                $.ajax({
+                    type: "POST",
+                     contentType: "application/json",
+                    url: "@Url.Content("~/reqhandler/Index")",
+                    data: JSON.stringify({ CurPSWD: $("#txtCurPass").val(), newPSWD: $("#txtNewPass").val()}),
+                    success: function (msg) {
+                        if (msg == "OK")
+                        {
+                            $.MsgBox.Inforamtion("The password has been changed successfully. Please sign in again.", Signout, null, null, 2);
+                            sResult = "OK";
+                        }
+                        else {
+                            $("#lierr").html("Failed to change password.");
+                        }
+                    }
+                });
+
+                return sResult;
+            }
+        }
+
+        function Signout()
+        {
+           location.href = "@Url.Content("~/Home/Signout")";
+        }
+
+        // Pop up Need Help box js
+        function NeedHelp() {
+            var s = "";
+            s += "<div style='font-family: calibri; font-size: 13px; margin-top: -20px;'>"
+            s += "<p>Feel free to click “Live Chat” at the bottom of the screen, when available, if you need further assistance.</p></div>"
+            $.MsgBox.Inforamtion(s, Signout, null, null, 2);
+        }
+
+        function openLiveChat() {
+                window.open('https://??', 'Live Chat Support', 'height=400,width=400,top=0,left=0,resizable');
+        }
+    </script>
+</head>
+<body id="body1" runat="server">
+   
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { id = "form1", name = "form1" }))
+    {
+        <div id="divouter" class="divouter">
+            <div id="divmain" class="divmain">
+                <div id="divinner">
+                    <div id="divbanner">
+                        <img src="~/Picture/APLlogo.png" />
+                    </div>
+
+                    <div id="divLoginHeader">
+                        <div class="text-title"></div>
+                    </div>
+                    <br />
+
+                    <div id="divcontent">
+                        <input id="txtCompanyID" placeholder="Company ID" Name='CompanyID' runat="server" required="required" value="@ViewBag.CompanyID" />
+                        <br />
+                        <br />
+                        <input id="txtAgentID" placeholder="Agent ID" Name='AgentID' runat="server" required="required" value="@ViewBag.AgentID" />
+                        <br />
+                        <br />
+                        <input id="txtpwd" type="password" placeholder="Password" name="Password" runat="server" required="required" oninvalid="setCustomValidity('Password is required.')" oninput="setCustomValidity('')" />
+
+                        @Html.ValidationSummary(false, null, new { @class = "text-danger", @style = "color:red; margin-top: 8%; margin-bottom: -5%;  " })
+
+                    </div>
+                    <br />
+                    <br />
+                    <br />
+                    <div id="divfoot">
+                        <input id="iplogin" type="submit" value="Sign in" /> <br/>
+                        <a href="#" onclick='NeedHelp()' style="color:#0067b8; text-align: center; padding-top: 10px; margin-right: 0px"> Need Help? </a>
+                    </div>
+                </div>
+
+                <div id="divpagefoot">
+                    <div id="divfootNode">
+                        <a href="#" id="LiveChat" onClick="openLiveChat();" runat="server" stlye="screen.width = ">Live Chat</a>
+                        <a href="http://??" target="_blank">Privacy Policy </a>
+                        <a href="https://??" target="_blank" id="aCopyright" runat="server">© @DateTime.Now.Year</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <input id="txtPageSize" type="hidden" name="PageSize" value="10" />
+    }
+</body>
+
+</html>
